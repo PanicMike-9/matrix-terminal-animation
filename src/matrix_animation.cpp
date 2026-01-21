@@ -3,6 +3,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <random>
 
 using std::vector;
 using std::string;
@@ -27,22 +28,20 @@ int main()
     vector<string> canvas(ROWS, string(COLS, ' '));
     canvas[0][2] = 'X';
 
-    for(const string& row : canvas)
+    while(true) // runs the simple delay animation infinitely 
     {
-        std::cout << row << '\n';
+        std::cout.flush(); // clear output buffer
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // add delay
+        
+        update_canvas(canvas);
+
+        std::cout << "\033[2J\033[H"; // clear terminal using ANSI code
+        for(const string& row : canvas)
+        {
+            std::cout << row << '\n';
+        }
+        std::cout.flush(); // clear output buffer    
     }
-
-    std::cout.flush(); // clear output buffer
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(500)); // add delay
-    
-    update_canvas(canvas);
-
-    std::cout << "\033[2J\033[H"; // clear terminal using ANSI code
-    for(const string& row : canvas)
-    {
-        std::cout << row << '\n';
-    }
-    std::cout.flush(); // clear output buffer    
     return 0;
 }
