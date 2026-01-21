@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <chrono>
+#include <thread>
 
 using std::vector;
 using std::string;
@@ -24,16 +26,23 @@ int main()
 {
     vector<string> canvas(ROWS, string(COLS, ' '));
     canvas[0][2] = 'X';
+
     for(const string& row : canvas)
     {
         std::cout << row << '\n';
     }
 
+    std::cout.flush();
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    
     update_canvas(canvas);
 
+    std::cout << "\033[2J\033[H";
     for(const string& row : canvas)
     {
         std::cout << row << '\n';
     }
+    std::cout.flush();
     return 0;
 }
