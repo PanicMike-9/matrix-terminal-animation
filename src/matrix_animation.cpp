@@ -23,6 +23,17 @@ void update_canvas(vector<string>& canvas)
 int main()
 {
     vector<string> canvas(ROWS, string(COLS, ' '));
+    canvas[0][2] = 'X';
+    for(const string& row : canvas)
+    {
+        std::cout << row << '\n';
+    }
+
     update_canvas(canvas);
+
+    for(const string& row : canvas)
+    {
+        std::cout << row << '\n';
+    }
     return 0;
 }
