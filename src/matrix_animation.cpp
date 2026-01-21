@@ -32,17 +32,17 @@ int main()
         std::cout << row << '\n';
     }
 
-    std::cout.flush();
+    std::cout.flush(); // clear output buffer
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500)); // add delay
     
     update_canvas(canvas);
 
-    std::cout << "\033[2J\033[H";
+    std::cout << "\033[2J\033[H"; // clear terminal using ANSI code
     for(const string& row : canvas)
     {
         std::cout << row << '\n';
     }
-    std::cout.flush();
+    std::cout.flush(); // clear output buffer    
     return 0;
 }
