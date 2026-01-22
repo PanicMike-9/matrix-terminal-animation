@@ -35,12 +35,37 @@ void update_canvas(vector<string>& canvas)
 
 }
 
+void animate(vector<string>& canvas)
+{
+    while(true)
+    {
+        std::cout.flush();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+        update_canvas(canvas);
+
+        std::cout << "\033[2J\033[H";
+
+        for(const string& row : canvas)
+        {
+            std::cout << row << '\n';
+        }
+
+        std::cout.flush();
+    }
+}
+
 int main()
 {
     srand(time(nullptr));
     vector<string> canvas(ROWS, string(COLS, ' '));
     canvas[0][2] = 'X';
+    animate(canvas);
+    return 0;
+}
 
+/*
     while(true) // runs the simple delay animation infinitely 
     {
         std::cout.flush(); // clear output buffer
@@ -56,5 +81,4 @@ int main()
         }
         std::cout.flush(); // clear output buffer    
     }
-    return 0;
-}
+ */
