@@ -11,8 +11,8 @@ using std::string;
 
 #define ROWS 20
 #define COLS 60
-#define DELAY 100 // in milliseconds
-#define ANSI_CLEAR "\033[2J\033[H" // ANSI code to clear terminal
+constexpr int DELAY = 100; // in milliseconds
+constexpr const char* CLEAR_SCREEN = "\033[2J\033[H"; // ANSI code to clear terminal
 
 //updates canvas and prints 0 or 1 
 void update_canvas(vector<string>& canvas)
@@ -49,7 +49,7 @@ void animate(vector<string>& canvas)
 
         update_canvas(canvas);
 
-        std::cout << ANSI_CLEAR; // clear terminal using ANSI code
+        std::cout << CLEAR_SCREEN; // clear terminal using ANSI code
 
         for(const string& row : canvas)
         {
