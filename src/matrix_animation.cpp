@@ -4,6 +4,8 @@
 #include <chrono>
 #include <thread>
 #include <random>
+#include <cstdlib>
+#include <ctime>
 
 using std::vector;
 using std::string;
@@ -20,11 +22,23 @@ void update_canvas(vector<string>& canvas)
         canvas[row] = canvas[row - 1];
     }
 
-    canvas[0] = string(canvas[0].size(), ' ');
+    for(size_t col = 0; col < canvas[0].size(); ++col)
+    {
+        if(rand() % 4 == 0)
+        {
+            canvas[0][col] = (rand() % 2 == 0) ? '0' : '1';
+        }
+        else
+        {
+            canvas[0][col] = ' ';
+        }
+    }
+
 }
 
 int main()
 {
+    srand(time(nullptr));
     vector<string> canvas(ROWS, string(COLS, ' '));
     canvas[0][2] = 'X';
 
