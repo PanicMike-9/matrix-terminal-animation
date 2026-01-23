@@ -13,6 +13,8 @@ using std::string;
 #define COLS 60
 constexpr int DELAY = 100; // in milliseconds
 constexpr const char* CLEAR_SCREEN = "\033[2J\033[H"; // ANSI code to clear terminal
+constexpr const char* ANSI_GREEN = "\e[0;32m"; // ANSI code for Green color
+constexpr const char* ANSI_RESET = "\033[0m"; // ANSI code for reset
 
 //updates canvas and prints 0 or 1 
 void update_canvas(vector<string>& canvas)
@@ -49,11 +51,20 @@ void animate(vector<string>& canvas)
 
         update_canvas(canvas);
 
-        std::cout << CLEAR_SCREEN; // clear terminal using ANSI code
+        std::cout << CLEAR_SCREEN;
 
         for(const string& row : canvas)
         {
-            std::cout << row << '\n';
+            for(const char& ch : row)
+            {
+                if(ch == ' ')
+                    std::cout << ch;  
+                else 
+                {
+                    std::cout << ANSI_GREEN << ch << ANSI_RESET;
+                }
+            }
+            std::cout << '\n';
         }
 
         std::cout.flush();
