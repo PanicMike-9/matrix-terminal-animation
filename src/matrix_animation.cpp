@@ -13,7 +13,7 @@ using std::string;
 #define COLS 60
 constexpr int DELAY = 100; // in milliseconds
 constexpr const char* CLEAR_SCREEN = "\033[2J\033[H"; // ANSI code to clear terminal
-constexpr const char* ANSI_GREEN = "\e[0;32m"; // ANSI code for Green color
+constexpr const char* ANSI_GREEN = "\e[38;2;0;255;0m"; // ANSI code for Green color
 constexpr const char* ANSI_RESET = "\033[0m"; // ANSI code for reset
 
 //updates canvas and prints 0 or 1 
