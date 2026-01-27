@@ -15,6 +15,8 @@ constexpr int DELAY = 100; // in milliseconds
 constexpr const char* CLEAR_SCREEN = "\033[2J\033[H"; // ANSI code to clear terminal
 constexpr const char* ANSI_GREEN = "\e[38;2;0;255;0m"; // ANSI code for Green color
 constexpr const char* ANSI_RESET = "\033[0m"; // ANSI code for reset
+constexpr const char* HIDE_CURSOR = "\033[?25l"; // ANSI code to hide cursor
+constexpr const char* SHOW_CURSOR = "\033[?25h"; // ANSI code to show cursor again
 
 //updates canvas and prints 0 or 1 
 void update_canvas(vector<string>& canvas)
@@ -76,7 +78,9 @@ int main()
     srand(time(nullptr));
     vector<string> canvas(ROWS, string(COLS, ' '));
     canvas[0][2] = ' ';
+    std::cout << HIDE_CURSOR;
     animate(canvas);
+    std::cout << SHOW_CURSOR;
     return 0;
 }
 
