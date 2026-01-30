@@ -80,9 +80,9 @@ int main()
     vector<string> canvas(ROWS, string(COLS, ' '));
     canvas[0][2] = ' ';
     std::cout << ALT_SCREEN;
-    std::cout << HIDE_CURSOR;
+    //std::cout << HIDE_CURSOR;
     animate(canvas);
-    std::cout << SHOW_CURSOR;
+    //std::cout << SHOW_CURSOR;
     std::cout << MAIN_SCREEN;
     return 0;
 }
