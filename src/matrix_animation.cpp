@@ -22,7 +22,7 @@ constexpr const char* ALT_SCREEN = "\033[?1049h"; // ANSI code for alternate scr
 constexpr const char* MAIN_SCREEN = "\033[?1049l"; // ANSI code to restore main screen
 //updates canvas and prints 0 or 1 
 
-void update_canvas(vector<string>& canvas, vector<int> stream_len)
+void update_canvas(vector<string>& canvas, vector<int>& stream_len)
 {
     // row and column
     int last_row = canvas.size() - 1;
@@ -38,22 +38,26 @@ void update_canvas(vector<string>& canvas, vector<int> stream_len)
 
     for(size_t col = 0; col < canvas[0].size(); ++col)
     {
-        if(stream_len[col] == 0)
-        {
-            if(rand() % 12 == 0) 
-            {
-                stream_len[col] = (rand() % (max - min + 1)) + min;
-            }
-        }
-
-        if(stream_len[col] > 0)
+        if(stream_len[col] > 0) 
         {
             canvas[0][col] = (rand() % 2 == 0) ? '0' : '1';
             stream_len[col]--;
         }
-        else
+        else 
         {
             canvas[0][col] = ' ';
+
+            if(stream_len[col] == 0)
+            {
+                if(rand() % 20 == 0)
+                {
+                    stream_len[col] = (rand() % (max - min + 1)) + min;
+                }
+            }
+            else 
+            {
+               stream_len[col]++;
+            }
         }
     }
 }
@@ -63,7 +67,6 @@ void animate(vector<string>& canvas)
 {
     // stream length vector to create streams
     vector<int> stream_len(COLS);
-    std::cout << stream_len.size() << ' ' << canvas[0].size() << '\n';
     // animation loop
     while(true)
     {
