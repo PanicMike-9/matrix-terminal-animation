@@ -31,7 +31,7 @@ void update_canvas(vector<string>& canvas, vector<int>& stream_len)
     int max = 25, min = 10;
     
     // shift canvas down
-    for(int row = last_row; row > 0; --row)
+    for(size_t row = last_row; row > 0; --row)
     {
         canvas[row] = canvas[row - 1];
     }
