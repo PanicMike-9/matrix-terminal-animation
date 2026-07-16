@@ -1,110 +1,135 @@
 #include <iostream>
+
 #include <vector>
 #include <string>
+
 #include <chrono>
 #include <thread>
-#include <cstdlib>
 #include <ctime>
 
-using std::vector;
-using std::string;
+#include <random>
 
-#define ROWS 20
-#define COLS 60
-constexpr int DELAY = 100; // in milliseconds
-constexpr const char* CLEAR_SCREEN = "\033[2J\033[H"; // ANSI code to clear terminal
-constexpr const char* ANSI_GREEN = "\033[38;2;0;255;0m"; // ANSI code for Green color
-constexpr const char* ANSI_RESET = "\033[0m"; // ANSI code for reset text format
-constexpr const char* HIDE_CURSOR = "\033[?25l"; // ANSI code to hide cursor
-constexpr const char* SHOW_CURSOR = "\033[?25h"; // ANSI code to show cursor again
-constexpr const char* ALT_SCREEN = "\033[?1049h"; // ANSI code for alternate screen
-constexpr const char* MAIN_SCREEN = "\033[?1049l"; // ANSI code to restore main screen
-//updates canvas and prints 0 or 1 
+#include "ansi.hpp"
 
-void update_canvas(vector<string>& canvas, vector<int>& stream_len)
+constexpr int DELAY = 50; // in milliseconds
+const constexpr int ROWS  = 48;
+const constexpr int COLS  = 180;
+
+// random algorithm
+static std::mt19937 gen(std::random_device{}());
+
+// refactoring in progress...
+struct Stream 
 {
-    // row and column
-    int last_row = canvas.size() - 1;
+    int column;
+    int head;
+    int length;
+};
 
+//updates canvas and prints 0 or 1 
+void update_canvas(std::vector<std::string>& canvas, std::vector<int>& stream_len)
+{
     // stream random length sizes
-    int max = 25, min = 10;
-    
-    // shift canvas down
-    for(size_t row = last_row; row > 0; --row)
+    constexpr int max_len = 25; 
+    constexpr int min_len = 10;
+
+    // range
+    std::uniform_int_distribution<> distrib(1, 50);
+
+    // row and column
+    const int& last_row = canvas.size() - 1;
+
+    // row loop
+    for (auto rows = last_row; rows > 0; --rows)
     {
-        canvas[row] = canvas[row - 1];
+        canvas[rows] = canvas[rows - 1];
     }
 
-    for(size_t col = 0; col < canvas[0].size(); ++col)
+    // column loop
+    for (auto cols = 0; cols < canvas[0].size(); ++cols)
     {
-        if(stream_len[col] > 0) 
+        if (stream_len[cols] > 0) 
         {
-            canvas[0][col] = (rand() % 2 == 0) ? '0' : '1';
-            stream_len[col]--;
+            canvas[0][cols] = (distrib(gen) % 2 == 0) ? '0' : '1';
+            canvas[2][cols] = (distrib(gen) % 4 == 1) ? '<' : '>';
+            canvas[4][cols] = (distrib(gen) % 6 == 2) ? '~' : '^';
+
+            /*
+            for (auto i = 1; i < 10; ++i)
+            {
+                canvas[0][cols] = (distrib(gen) % i == 0) ? '$' : '0';
+                canvas[2][cols] = (distrib(gen) % i == 0) ? '1' : '*';
+                canvas[4][cols] = (distrib(gen) % i == 0) ? '~' : '5';
+            }
+            */
+            stream_len[cols]--;
         }
         else 
         {
-            canvas[0][col] = ' ';
+            canvas[0][cols] = ' ';
 
-            if(stream_len[col] == 0)
+            if (stream_len[cols] == 0)
             {
-                if(rand() % 20 == 0)
+                if (distrib(gen) % 20 == 0)
                 {
-                    stream_len[col] = (rand() % (max - min + 1)) + min;
+                    stream_len[cols] = (distrib(gen) % (max_len - min_len + 1)) + min_len;
                 }
-            }
-            else 
-            {
-               stream_len[col]++;
             }
         }
     }
 }
 
 // animate the canvas
-void animate(vector<string>& canvas)
+void animate(std::vector<std::string>& canvas)
 {
-    // stream length vector to create streams
-    vector<int> stream_len(COLS);
-    // animation loop
-    while(true)
-    {
-        std::cout.flush(); //clear output buffer
+    // stream length std::vector to create streams
+    std::vector<int> stream_len(COLS);
 
+    // animation loop
+    while (true)
+    {
         std::this_thread::sleep_for(std::chrono::milliseconds(DELAY)); // add delay
+
+        std::cout << ansi::home;
 
         update_canvas(canvas, stream_len);
 
-        std::cout << CLEAR_SCREEN;
-
-        for(const string& row : canvas)
+        for (const std::string& row : canvas)
         {
-            for(const char& ch : row)
+            for (const char& ch : row)
             {
-                if(ch == ' ')
-                    std::cout << ch;  
+                if (ch == ' ')
+                {
+                    std::cout << ansi::white << ch;
+                }
                 else 
                 {
-                    std::cout << ANSI_GREEN << ch << ANSI_RESET;
+                    std::cout << ansi::bright_green << ch;
                 }
             }
             std::cout << '\n';
+            std::cout.flush();
         }
-
-        std::cout.flush();
     }
 }
 
 int main()
 {
     srand(time(nullptr));
-    vector<string> canvas(ROWS, string(COLS, ' '));
-    canvas[0][2] = ' ';
-    std::cout << ALT_SCREEN;
-    //std::cout << HIDE_CURSOR;
-    animate(canvas);
-    //std::cout << SHOW_CURSOR;
-    std::cout << MAIN_SCREEN;
+    std::vector<std::string> canvas(ROWS, std::string(COLS, ' '));
+    canvas[1][3] = ' ';
+
+    // open alternate screen
+    std::cout << ansi::alt_screen;
+ 
+    //std::cout << ansi::move(5, 5);
+    // play animation
+    animate(canvas);    
+
+    // back to main screen
+    std::cout << ansi::main_screen;
+
     return 0;
 }
+
 
