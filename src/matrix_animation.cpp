@@ -11,7 +11,7 @@
 
 #include "ansi.hpp"
 
-constexpr int DELAY = 50; // in milliseconds
+const constexpr int DELAY = 50; 
 const constexpr int ROWS  = 48;
 const constexpr int COLS  = 180;
 
@@ -51,8 +51,8 @@ void update_canvas(std::vector<std::string>& canvas, std::vector<int>& stream_le
         if (stream_len[cols] > 0) 
         {
             canvas[0][cols] = (distrib(gen) % 2 == 0) ? '0' : '1';
-            canvas[2][cols] = (distrib(gen) % 4 == 1) ? '<' : '>';
-            canvas[4][cols] = (distrib(gen) % 6 == 2) ? '~' : '^';
+            canvas[2][cols] = (distrib(gen) % 2 == 0) ? '<' : '@';
+            canvas[4][cols] = (distrib(gen) % 2 == 0) ? '~' : '^';
 
             /*
             for (auto i = 1; i < 10; ++i)
@@ -100,11 +100,11 @@ void animate(std::vector<std::string>& canvas)
             {
                 if (ch == ' ')
                 {
-                    std::cout << ansi::white << ch;
+                    std::cout << ch;
                 }
                 else 
                 {
-                    std::cout << ansi::bright_green << ch;
+                    std::cout << ansi::bright_red << ch;
                 }
             }
             std::cout << '\n';
@@ -117,12 +117,11 @@ int main()
 {
     srand(time(nullptr));
     std::vector<std::string> canvas(ROWS, std::string(COLS, ' '));
-    canvas[1][3] = ' ';
+    canvas[0][2] = ' ';
 
     // open alternate screen
     std::cout << ansi::alt_screen;
  
-    //std::cout << ansi::move(5, 5);
     // play animation
     animate(canvas);    
 
